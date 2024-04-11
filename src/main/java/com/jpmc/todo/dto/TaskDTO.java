@@ -1,4 +1,7 @@
 package com.jpmc.todo.dto;
 
-public record TaskDTO(int id, String title, String description) implements BaseDTO {
+import java.util.List;
+import java.util.Optional;
+
+public record TaskDTO(int id, String title, String description, List<StepDTO> steps) implements BaseDTO {
 }

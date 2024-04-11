@@ -20,6 +20,6 @@ public class TaskEntity implements BaseEntity {
 
     private String description;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StepEntity> steps;
 }

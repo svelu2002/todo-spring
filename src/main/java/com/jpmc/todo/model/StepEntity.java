@@ -1,11 +1,20 @@
 package com.jpmc.todo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "steps")
 public class StepEntity implements BaseEntity {
-    private int serialNumber;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
     private String instruction;
 
     @ManyToOne

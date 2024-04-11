@@ -19,22 +19,22 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @GetMapping(path = "/tasks")
+    @GetMapping
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.getAllTasks());
     }
 
-    @PostMapping(path = "/tasks")
+    @PostMapping
     public ResponseEntity<TaskDTO> saveTask(@RequestBody @Valid TaskDTO taskDTO) throws TaskAlreadyExistsException {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.saveTask(taskDTO));
     }
 
-    @PutMapping(path = "/tasks/{id}")
+    @PutMapping(path = "/{id}")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable int id, @RequestBody TaskDTO taskDTO) throws TaskNotFoundException {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(taskService.updateTask(id, taskDTO));
     }
 
-    @DeleteMapping(path = "/tasks/{id}")
+    @DeleteMapping(path = "{id}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteTask(@PathVariable int id) throws TaskNotFoundException {
         taskService.deleteTask(id);
