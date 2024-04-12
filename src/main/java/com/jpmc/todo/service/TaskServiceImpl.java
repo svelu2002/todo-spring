@@ -10,6 +10,7 @@ import com.jpmc.todo.repository.StepRepository;
 import com.jpmc.todo.repository.TaskRepository;
 import com.jpmc.todo.util.EntityDTOConverter;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class TaskServiceImpl implements TaskService {
 
     @Autowired
@@ -27,27 +29,38 @@ public class TaskServiceImpl implements TaskService {
     private StepRepository stepRepository;
 
     @Override
-    @Transactional
+    // @Transactional
     public TaskDTO saveTask(TaskDTO taskDTO) throws TaskAlreadyExistsException {
+        log.info("Inside TaskServiceImpl.saveTask()");
         Optional<TaskEntity> optionalTaskEntity = taskRepository.findById(taskDTO.id());
         if (optionalTaskEntity.isPresent()) {
             throw new TaskAlreadyExistsException("Task with the id " + taskDTO.id() + " already exists.");
         } else {
+            // Save the task without any steps so that Task id can be assigned to the steps
             TaskEntity taskEntity = (TaskEntity) EntityDTOConverter.convertToEntity(taskDTO);
             taskEntity.setSteps(null);
             TaskEntity savedTaskEntity = taskRepository.save(taskEntity);
-            List<StepEntity> savedStepEntities = new ArrayList<>();
-            StepEntity stepEntity;
-            if (!taskDTO.steps().isEmpty()) {
+
+            log.info("Task saved successfully");
+            // Save the entities with the Task information
+            if (taskDTO.steps() != null && !taskDTO.steps().isEmpty()) {
+                log.info("Steps is not null");
+                List<StepEntity> savedStepEntities = new ArrayList<>();
+                StepEntity stepEntity;
                 for(StepDTO stepDTO: taskDTO.steps()) {
                     stepEntity = stepRepository.save((StepEntity) EntityDTOConverter.convertToEntity(stepDTO));
                     stepEntity.setTask(savedTaskEntity);
                     savedStepEntities.add(stepEntity);
                 }
                 savedTaskEntity.setSteps(savedStepEntities);
+
+                // Update the task with saved steps
+                savedTaskEntity = taskRepository.save(savedTaskEntity);
+            } else {
+                log.info("Steps is null in TaskDTO");
             }
-            TaskEntity updatedTtaskEntity = taskRepository.save(savedTaskEntity);
-            return (TaskDTO) EntityDTOConverter.convertToDTO(updatedTtaskEntity);
+
+            return (TaskDTO) EntityDTOConverter.convertToDTO(savedTaskEntity);
         }
     }
 
