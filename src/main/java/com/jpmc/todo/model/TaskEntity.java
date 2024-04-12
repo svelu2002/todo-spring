@@ -16,9 +16,14 @@ public class TaskEntity implements BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false, unique = true)
     private String title;
 
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
+    private String status;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StepEntity> steps;

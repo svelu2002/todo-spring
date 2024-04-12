@@ -15,6 +15,10 @@ public class StepEntity implements BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
+    private int ordinalNumber;
+
+    @Column(nullable = false, unique = true)
     private String instruction;
 
     @ManyToOne

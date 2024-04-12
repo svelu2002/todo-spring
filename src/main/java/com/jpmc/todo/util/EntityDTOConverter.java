@@ -23,9 +23,9 @@ public class EntityDTOConverter {
                     stepEntities = stepDTOS.stream().map(stepDTO -> (StepEntity) EntityDTOConverter.convertToEntity(stepDTO)).toList();
                 }
             }
-            return new TaskEntity(taskDTO.id(), taskDTO.title(), taskDTO.description(), stepEntities);
+            return new TaskEntity(taskDTO.id(), taskDTO.title(), taskDTO.description(), taskDTO.status(), stepEntities);
         } else if (baseDTO instanceof StepDTO stepDTO) {
-            return new StepEntity(stepDTO.id(), stepDTO.instruction(), null);
+            return new StepEntity(stepDTO.id(), stepDTO.ordinalNumber(), stepDTO.instruction(), null);
         } else {
             return null;
         }
@@ -39,9 +39,9 @@ public class EntityDTOConverter {
             } else {
                 stepDTOS = new ArrayList<>();
             }
-            return new TaskDTO(taskEntity.getId(), taskEntity.getTitle(), taskEntity.getDescription(), Optional.of(stepDTOS));
+            return new TaskDTO(taskEntity.getId(), taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getStatus(), Optional.of(stepDTOS));
         } else if (baseEntity instanceof StepEntity stepEntity) {
-            return new StepDTO(stepEntity.getId(), stepEntity.getInstruction());
+            return new StepDTO(stepEntity.getId(), stepEntity.getOrdinalNumber(), stepEntity.getInstruction());
         } else {
             return null;
         }

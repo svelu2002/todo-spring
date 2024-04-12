@@ -184,5 +184,10 @@ public class TaskServiceImpl implements TaskService {
             throw new TaskNotFoundException("Task with id " + taskId + " not found");
     }
 
+    @Override
+    public List<TaskDTO> getTasksByStatus(String status) {
+        return taskRepository.getTasksByStatus(status).stream().map(taskEntity -> (TaskDTO) EntityDTOConverter.convertToDTO(taskEntity)).toList();
+    }
+
 
 }

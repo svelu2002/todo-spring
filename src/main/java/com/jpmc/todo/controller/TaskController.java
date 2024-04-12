@@ -67,4 +67,9 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(taskService.updateStepForTask(taskId, stepId, stepDTO));
     }
 
+    @GetMapping(path = "/by-status")
+    public ResponseEntity<List<TaskDTO>> getTasksByStatus(String status) {
+        return ResponseEntity.status(HttpStatus.OK).body(taskService.getTasksByStatus(status));
+    }
+
 }

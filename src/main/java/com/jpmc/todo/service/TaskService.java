@@ -26,4 +26,6 @@ public interface TaskService {
 
     public TaskDTO updateStepForTask(int taskId, int stepId, StepDTO stepDTO) throws TaskNotFoundException, StepNotFoundException;
 
+    public List<TaskDTO> getTasksByStatus(String status);
+
 }
