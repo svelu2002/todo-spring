@@ -1,11 +1,7 @@
 package com.jpmc.todo.util;
 
-import com.jpmc.todo.dto.BaseDTO;
-import com.jpmc.todo.dto.StepDTO;
-import com.jpmc.todo.dto.TaskDTO;
-import com.jpmc.todo.model.BaseEntity;
-import com.jpmc.todo.model.StepEntity;
-import com.jpmc.todo.model.TaskEntity;
+import com.jpmc.todo.dto.*;
+import com.jpmc.todo.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +22,10 @@ public class EntityDTOConverter {
             return new TaskEntity(taskDTO.id(), taskDTO.title(), taskDTO.description(), taskDTO.status(), stepEntities);
         } else if (baseDTO instanceof StepDTO stepDTO) {
             return new StepEntity(stepDTO.id(), stepDTO.ordinalNumber(), stepDTO.instruction(), null);
+        } else if (baseDTO instanceof UserDTO userDTO) {
+            return new UserEntity(userDTO.id(), userDTO.username(), userDTO.password(), userDTO.role(), null);
+        } else if (baseDTO instanceof UserProfileDTO userProfileDTO) {
+            return new UserProfileEntity(userProfileDTO.id(), userProfileDTO.fullName(), userProfileDTO.gender(), userProfileDTO.dob(), null);
         } else {
             return null;
         }
@@ -42,6 +42,10 @@ public class EntityDTOConverter {
             return new TaskDTO(taskEntity.getId(), taskEntity.getTitle(), taskEntity.getDescription(), taskEntity.getStatus(), Optional.of(stepDTOS));
         } else if (baseEntity instanceof StepEntity stepEntity) {
             return new StepDTO(stepEntity.getId(), stepEntity.getOrdinalNumber(), stepEntity.getInstruction());
+        } else if (baseEntity instanceof UserEntity userEntity) {
+            return new UserDTO(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword(), userEntity.getRole(), userEntity.getProfile().getFullName());
+        } else if (baseEntity instanceof UserProfileEntity userProfileEntity) {
+            return new UserProfileDTO(userProfileEntity.getId(), userProfileEntity.getFullName(), userProfileEntity.getGender(), userProfileEntity.getDob());
         } else {
             return null;
         }

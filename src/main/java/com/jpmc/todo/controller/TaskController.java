@@ -39,7 +39,7 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(taskService.updateTask(id, taskDTO));
     }
 
-    @DeleteMapping(path = "{id}")
+    @DeleteMapping(path = "/{id}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteTask(@PathVariable int id) throws TaskNotFoundException {
         taskService.deleteTask(id);

@@ -30,6 +30,9 @@ public class UserEntity implements BaseEntity, UserDetails {
 
     private String role;
 
+    @OneToOne(mappedBy = "user")
+    private UserProfileEntity profile;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
