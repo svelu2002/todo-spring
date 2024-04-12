@@ -28,7 +28,7 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<TaskDTO> saveTask(@RequestBody @Valid TaskDTO taskDTO) throws TaskAlreadyExistsException {
-        log.info("inside TaskController - saveTask");
+        log.debug("inside TaskController - saveTask");
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.saveTask(taskDTO));
     }
 
