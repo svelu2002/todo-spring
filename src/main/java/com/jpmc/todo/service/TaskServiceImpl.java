@@ -2,6 +2,7 @@ package com.jpmc.todo.service;
 
 import com.jpmc.todo.dto.StepDTO;
 import com.jpmc.todo.dto.TaskDTO;
+import com.jpmc.todo.exception.StepNotFoundException;
 import com.jpmc.todo.exception.TaskAlreadyExistsException;
 import com.jpmc.todo.exception.TaskNotFoundException;
 import com.jpmc.todo.model.StepEntity;
@@ -103,24 +104,85 @@ public class TaskServiceImpl implements TaskService {
             throw new TaskNotFoundException("Task with id " + id + " not found");
     }
 
-    /*
+    @Override
     public TaskDTO addStepToTask(int id, StepDTO stepDTO) throws TaskNotFoundException {
         Optional<TaskEntity> optionalTaskEntity = taskRepository.findById(id);
         List<StepEntity> steps;
         if (optionalTaskEntity.isPresent()) {
             TaskEntity taskEntity = optionalTaskEntity.get();
-            if (taskEntity.getSteps().isPresent()) {
-                steps = taskEntity.getSteps().get();
+            if (taskEntity.getSteps() != null) {
+                steps = taskEntity.getSteps();
             } else {
                 steps = new ArrayList<>();
             }
-            steps.add((StepEntity) EntityDTOConverter.convertToEntity(stepDTO));
+
+            // Set the task for the new step and save it
+            StepEntity stepEntity = (StepEntity) EntityDTOConverter.convertToEntity(stepDTO);
+            stepEntity.setTask(taskEntity);
+            StepEntity savedStepEntity = stepRepository.save(stepEntity);
+
+            // Add the saved Step to the Task's steps list and update the Task
+            steps.add(savedStepEntity);
+            taskEntity.setSteps(steps);
             taskEntity = taskRepository.save(taskEntity);
             return (TaskDTO) EntityDTOConverter.convertToDTO(taskEntity);
         } else
             throw new TaskNotFoundException("Task with id " + id + " not found");
     }
 
-     */
+    @Override
+    public TaskDTO deleteStepFromTask(int taskId, int stepId) throws TaskNotFoundException, StepNotFoundException {
+        Optional<TaskEntity> optionalTaskEntity = taskRepository.findById(taskId);
+        List<StepEntity> steps;
+        if (optionalTaskEntity.isPresent()) {
+            TaskEntity taskEntity = optionalTaskEntity.get();
+            if (taskEntity.getSteps() != null) {
+                steps = taskEntity.getSteps();
+                Optional<StepEntity> optionalStepEntity = stepRepository.findById(stepId);
+                if (optionalStepEntity.isPresent()) {
+                    steps.remove(optionalStepEntity.get());
+                    taskEntity = taskRepository.save(taskEntity);
+                    return (TaskDTO) EntityDTOConverter.convertToDTO(taskEntity);
+                } else {
+                    throw new StepNotFoundException("Step with id " + stepId + " not found");
+                }
+            } else {
+                throw new StepNotFoundException("Step with id " + stepId + " not found");
+            }
+
+        } else
+            throw new TaskNotFoundException("Task with id " + taskId + " not found");
+    }
+
+    @Override
+    public TaskDTO updateStepForTask(int taskId, int stepId, StepDTO stepDTO) throws TaskNotFoundException, StepNotFoundException {
+        Optional<TaskEntity> optionalTaskEntity = taskRepository.findById(taskId);
+        List<StepEntity> steps;
+        if (optionalTaskEntity.isPresent()) {
+            TaskEntity taskEntity = optionalTaskEntity.get();
+            if (taskEntity.getSteps() != null) {
+                steps = taskEntity.getSteps();
+                Optional<StepEntity> optionalStepEntity = stepRepository.findById(stepId);
+                if (optionalStepEntity.isPresent()) {
+                    StepEntity stepEntity = optionalStepEntity.get();
+                    int index = steps.indexOf(stepEntity);
+                    if (index != -1) {
+                        stepEntity.setInstruction(stepDTO.instruction());
+                        steps.set(index, stepEntity);
+                    }
+                    // stepEntity = stepRepository.save(stepEntity);
+                    taskEntity = taskRepository.save(taskEntity);
+                    return (TaskDTO) EntityDTOConverter.convertToDTO(taskEntity);
+                } else {
+                    throw new StepNotFoundException("Step with id " + stepId + " not found");
+                }
+            } else {
+                throw new StepNotFoundException("Step with id " + stepId + " not found");
+            }
+
+        } else
+            throw new TaskNotFoundException("Task with id " + taskId + " not found");
+    }
+
 
 }

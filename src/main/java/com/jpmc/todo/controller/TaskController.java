@@ -1,6 +1,8 @@
 package com.jpmc.todo.controller;
 
+import com.jpmc.todo.dto.StepDTO;
 import com.jpmc.todo.dto.TaskDTO;
+import com.jpmc.todo.exception.StepNotFoundException;
 import com.jpmc.todo.exception.TaskAlreadyExistsException;
 import com.jpmc.todo.exception.TaskNotFoundException;
 import com.jpmc.todo.service.TaskService;
@@ -49,6 +51,20 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(taskService.getTaskById(id));
     }
 
+    @PostMapping(path = "/{id}/steps")
+    public ResponseEntity<TaskDTO> addStepToTask(@PathVariable int id, @RequestBody StepDTO stepDTO) throws TaskNotFoundException {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(taskService.addStepToTask(id, stepDTO));
+    }
 
+    @DeleteMapping(path = "/{taskId}/steps/{stepId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteStepFromTask(@PathVariable int taskId, @PathVariable int stepId) throws TaskNotFoundException, StepNotFoundException {
+        taskService.deleteStepFromTask(taskId, stepId);
+    }
+
+    @PutMapping(path = "/{taskId}/steps/{stepId}")
+    public ResponseEntity<TaskDTO> updateStepForTask(@PathVariable int taskId, @PathVariable int stepId, @RequestBody StepDTO stepDTO) throws TaskNotFoundException, StepNotFoundException {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(taskService.updateStepForTask(taskId, stepId, stepDTO));
+    }
 
 }
