@@ -2,6 +2,7 @@ package com.jpmc.todo.service;
 
 import com.jpmc.todo.dto.StepDTO;
 import com.jpmc.todo.dto.TaskDTO;
+import com.jpmc.todo.exception.TaskNotFoundException;
 import com.jpmc.todo.model.StepEntity;
 import com.jpmc.todo.model.TaskEntity;
 import com.jpmc.todo.repository.TaskRepository;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,5 +70,44 @@ public class TaskServiceTest {
         task1Steps.add(task1Step2);
 
         return taskEntity1;
+    }
+
+    @Test
+    public void testGetTaskById() {
+        // Given
+        TaskDTO taskDTO1 = getTaskDTO1();
+        TaskEntity taskEntity1 = getTaskEntity1();
+
+        // When
+        when(taskRepository.findById(taskDTO1.id())).thenReturn(Optional.of(taskEntity1));
+
+        // Then
+        try {
+            assertEquals(taskDTO1, taskService.getTaskById(taskEntity1.getId()));
+        } catch (TaskNotFoundException e) {
+            fail("TaskNotFoundException was thrown: " + e.getMessage());
+        }
+
+
+        // check if method is called only once
+        verify(taskRepository, times(1)).findById(taskDTO1.id());
+    }
+
+    @Test
+    public void testGetTaskByIdWithInvalidId() {
+        // Given
+        TaskDTO taskDTO1 = getTaskDTO1();
+        TaskEntity taskEntity1 = getTaskEntity1();
+
+        // When
+        when(taskRepository.findById(taskDTO1.id())).thenReturn(Optional.empty());
+
+        // Then
+        assertThrows(TaskNotFoundException.class, () -> {
+            taskService.getTaskById(taskEntity1.getId());
+        });
+
+        // check if method is called only once
+        verify(taskRepository, times(1)).findById(taskDTO1.id());
     }
 }
