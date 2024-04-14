@@ -4,6 +4,8 @@ package com.jpmc.todo.dto;
 
 public class CustomerDTO {
 
+    private int id;
+
     private String name;
 
     //@Email
