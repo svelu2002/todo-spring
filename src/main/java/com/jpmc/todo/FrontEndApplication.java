@@ -26,7 +26,7 @@ public class FrontEndApplication {
                 selectedOption = scanner.nextInt();
                 switch (selectedOption) {
                     case 1:
-                        addProductToInventory();
+                        addProductToInventory(scanner);
                         break;
                     case 2:
                         // displayAvailableProducts();
@@ -83,7 +83,56 @@ public class FrontEndApplication {
         return exitOption;
     }
 
-    private static void addProductToInventory() {
+    private static void addProductToInventory(Scanner scanner) {
+        String productName = null;
+        double productPrice = 0.0;
+        double productQuantity = 0.0;
+        boolean validProductName = false;
+        boolean validProductPrice = false;
+        boolean validProductQuantity = false;
+        scanner.nextLine();  // flush
+        do {
+            System.out.print("Enter product name: ");
+            productName = scanner.nextLine();
+            if (productName == null || productName.isEmpty() || productName.isBlank()) {
+                System.out.println("Product name cannot be empty or blank");
+            } else {
+                validProductName = true;
+            }
+        } while (!validProductName);
+
+        do {
+            System.out.print("Enter product price: ");
+            try {
+                productPrice = scanner.nextDouble();
+                if (productPrice <= 0.0) {
+                    System.out.println("Product price cannot be zero or less");
+                } else {
+                    validProductPrice = true;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid Product Price");
+                scanner.nextLine();  // flush
+            }
+        } while (!validProductPrice);
+
+        do {
+            System.out.print("Enter product quantity: ");
+            try {
+                productQuantity = scanner.nextDouble();
+                if (productQuantity <= 0.0) {
+                    System.out.println("Product quantity cannot be zero or less");
+                } else {
+                    validProductQuantity = true;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid Product Quantity");
+                scanner.nextLine();  // flush
+            }
+        } while (!validProductQuantity);
+
+        System.out.println("Product name: " + productName + ", price: " + productPrice + ", productQuantity: " + productQuantity);
+
         System.out.println("Product added successfully.");
     }
 
