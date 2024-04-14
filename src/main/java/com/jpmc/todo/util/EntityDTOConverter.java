@@ -26,6 +26,8 @@ public class EntityDTOConverter {
             return new UserEntity(userDTO.id(), userDTO.username(), userDTO.password(), userDTO.role(), null);
         } else if (baseDTO instanceof UserProfileDTO userProfileDTO) {
             return new UserProfileEntity(userProfileDTO.id(), userProfileDTO.fullName(), userProfileDTO.gender(), userProfileDTO.dob(), null);
+        } else if (baseDTO instanceof ProductDTO productDTO) {
+            return new ProductEntity(productDTO.id(), productDTO.name(), productDTO.price(), null);
         } else {
             return null;
         }
@@ -46,6 +48,8 @@ public class EntityDTOConverter {
             return new UserDTO(userEntity.getId(), userEntity.getUsername(), userEntity.getPassword(), userEntity.getRole(), userEntity.getProfile().getFullName());
         } else if (baseEntity instanceof UserProfileEntity userProfileEntity) {
             return new UserProfileDTO(userProfileEntity.getId(), userProfileEntity.getFullName(), userProfileEntity.getGender(), userProfileEntity.getDob());
+        } else if (baseEntity instanceof ProductEntity productEntity) {
+            return new ProductDTO(productEntity.getId(), productEntity.getName(), productEntity.getPrice());
         } else {
             return null;
         }
